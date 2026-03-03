@@ -4,10 +4,9 @@
 #include "Vector.h"
 #include "List.h"
 
-namespace my
-{
+
 template <typename K, typename V>
-class Hashtable
+class HashTable
 {
 protected:
 	struct Pair
@@ -19,7 +18,7 @@ protected:
 	};
 
 private:
-	my::Vector<my::List<Pair>> m_bucket;
+	Vector<List<Pair>> m_bucket;
 	size_t m_size;
 
 	size_t hashFunction(const K& key) const
@@ -28,7 +27,7 @@ private:
 	}
 
 public:
-	Hashtable(size_t bucketCount) : m_bucket(bucketCount), m_size(0) {}
+	HashTable(size_t bucketCount) : m_bucket(bucketCount), m_size(0) {}
 
 	void insert(const K& key, const V& value)
 	{
@@ -87,7 +86,21 @@ public:
 public:
 	size_t size() const { return m_size; }
 	bool empty() const { return m_size == 0; }
+
+	V* get_ptr(const K& key)
+	{
+		size_t index = hashFunction(key);
+		auto& list = m_bucket[index];
+
+		for (auto it = list.begin(); it != list.end(); ++it) 
+		{
+			if (it->key == key) 
+			{
+				return &(it->value); 
+			}
+		}
+		return nullptr;
+	}
 };
-}
 
 #endif // HASHTABLE_H
